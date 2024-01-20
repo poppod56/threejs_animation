@@ -10,8 +10,8 @@ import styled from "styled-components";
 type Props = {};
 
 const CanvasRender = (props: Props) => {
-  const [animationsUrl, setAminUrl] = useState<string>("");
-  const [labelChange, setLabel] = useState<string>("คำที่ 1");
+  const [animationsUrl, setAminUrl] = useState<string[]>([]);
+  const [labelChange, setLabel] = useState<string>("");
   // useControls({
   //   annoying: button(() => {
   //     setAminUrl("./assets/models/annoying.glb");
@@ -39,7 +39,7 @@ const CanvasRender = (props: Props) => {
         <ambientLight intensity={0.5} />
         <Suspense fallback={null}>
           <Stage>
-            <ModelRender animationUrl={animationsUrl}></ModelRender>
+            <ModelRender animationUrl={""} animationSeq={animationsUrl}></ModelRender>
           </Stage>
         </Suspense>
         <OrbitControls
@@ -54,7 +54,7 @@ const CanvasRender = (props: Props) => {
         <ButtonSelected
           onClick={() => {
             OnClickButton("คำที่ 1");
-            setAminUrl("./assets/models/annoying.glb");
+            setAminUrl(["./assets/models/annoying.glb"]);
           }}
         >
           1
@@ -62,7 +62,7 @@ const CanvasRender = (props: Props) => {
         <ButtonSelected
           onClick={() => {
             OnClickButton("คำที่ 1 คำที่ 2");
-            setAminUrl("./assets/models/arrogant.glb");
+            setAminUrl(["./assets/models/annoying.glb","./assets/models/arrogant.glb"]);
           }}
         >
           2
@@ -70,7 +70,7 @@ const CanvasRender = (props: Props) => {
         <ButtonSelected
           onClick={() => {
             OnClickButton("คำที่ 1 คำที่ 2 คำที่ 3");
-            setAminUrl("./assets/models/bestfriend.glb");
+            setAminUrl(["./assets/models/annoying.glb","./assets/models/arrogant.glb","./assets/models/bestfriend.glb"]);
           }}
         >
           3
@@ -78,7 +78,7 @@ const CanvasRender = (props: Props) => {
         <ButtonSelected
           onClick={() => {
             OnClickButton("คำที่ 1 คำที่ 2 คำที่ 3 คำที่ 4");
-            setAminUrl("./assets/models/born.glb");
+            setAminUrl(["./assets/models/annoying.glb","./assets/models/arrogant.glb","./assets/models/bestfriend.glb","./assets/models/born.glb"]);
           }}
         >
           4
