@@ -61,7 +61,7 @@ const CanvasRender = (props: Props) => {
         </ButtonSelected>
         <ButtonSelected
           onClick={() => {
-            OnClickButton("คำที่ 2");
+            OnClickButton("คำที่ 1 คำที่ 2");
             setAminUrl("./assets/models/arrogant.glb");
           }}
         >
@@ -69,7 +69,7 @@ const CanvasRender = (props: Props) => {
         </ButtonSelected>
         <ButtonSelected
           onClick={() => {
-            OnClickButton("คำที่ 3");
+            OnClickButton("คำที่ 1 คำที่ 2 คำที่ 3");
             setAminUrl("./assets/models/bestfriend.glb");
           }}
         >
@@ -77,7 +77,7 @@ const CanvasRender = (props: Props) => {
         </ButtonSelected>
         <ButtonSelected
           onClick={() => {
-            OnClickButton("คำที่ 4");
+            OnClickButton("คำที่ 1 คำที่ 2 คำที่ 3 คำที่ 4");
             setAminUrl("./assets/models/born.glb");
           }}
         >
