@@ -35,7 +35,13 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
 
     mixer.removeEventListener("finished", onFinish);
     mixer.addEventListener("finished", onFinish);
-    LoadAnimation(animationSeq[currentIndex],null);
+    // if(lastAction)
+    // {
+    //     lastAction.clampWhenFinished = false;
+    //     lastAction?.reset().stop();
+    //     //lastAction?.reset().fadeOut(1).stop();
+    // }
+    LoadAnimation(animationSeq[currentIndex],lastAction);
   }, [animationSeq]);
 
   const gltfLoader = new GLTFLoader();
@@ -59,8 +65,14 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
       LoadAnimation(animationSeq[currentIndex],e.action);
     } else {
       currentIndex = 0;
+      //e.action?.reset().fadeOut(0.8).stop();
+    //   if(e.action!=null)
+    //   {
+    //     e.action.clampWhenFinished = false;
+    //     e.action?.reset().fadeOut(1).stop();
+    //   }
       mixer.removeEventListener("finished", onFinish);
-      e.action?.stop();
+      
     }
     
     //e.action?.stop();
@@ -108,7 +120,9 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
         animationAction.clampWhenFinished = true;
        
         animationAction?.reset().fadeOut(0).stop();
+
         animationAction?.reset().fadeIn(0).play();
+        setLastAction(animationAction);
         //setAction(animationAction);
         console.log(_poseURL);
       }
