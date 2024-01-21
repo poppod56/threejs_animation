@@ -22,45 +22,20 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
     // if (animationUrl == "") {
     //   //actions[names[0]]?.setLoop(THREE.LoopOnce, 0);
     //   actions[names[0]]?.reset().fadeIn(0.25).play();
-
     //   //console.log("animation", actions[names[0]], animations);
     // } else {
     //   actions[names[0]]?.reset().stop();
     //   LoadAnimation(animationUrl);
     // }
-
     //onLoaded();
   }, [animationUrl]);
   useEffect(() => {
     if (animationSeq.length <= 0) return;
-   // actions[names[0]]?.reset().stop();
+    // actions[names[0]]?.reset().stop();
+
     mixer.removeEventListener("finished", onFinish);
     mixer.addEventListener("finished", onFinish);
-    LoadAnimation(animationSeq[currentIndex]);
-    // if(animationSeq.length ==1)
-    // {
-       
-    //   LoadAnimation(animationUrl);
-      
-    // }
-    // if(animationSeq.length ==2)
-    // {
-    //     LoadAnimationSeq
-    // }
-    // animationSeq.forEach((element) => {
-    //   LoadAnimation(animationUrl);
-    // });
-    // if (animationUrl == "") {
-    //   //actions[names[0]]?.setLoop(THREE.LoopOnce, 0);
-    //   actions[names[0]]?.reset().fadeIn(0.25).play();
-
-    //   //console.log("animation", actions[names[0]], animations);
-    // } else {
-    //   actions[names[0]]?.reset().stop();
-    //   LoadAnimation(animationUrl);
-    // }
-
-    //onLoaded();
+    LoadAnimation(animationSeq[currentIndex],null);
   }, [animationSeq]);
 
   const gltfLoader = new GLTFLoader();
@@ -72,22 +47,31 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
   const [activeAction, setActiveAction] = useState<THREE.AnimationAction>();
   const [lastAction, setLastAction] = useState<THREE.AnimationAction>();
   const { ref, mixer, actions, names } = useAnimations(animations, scene);
-  let currentIndex =0;
+  let currentIndex = 0;
 
-  const onFinish = () => {
-    if(currentIndex<animationSeq.length-1)
-    {
-        currentIndex++;
-        LoadAnimation(animationSeq[currentIndex]);
-    }
-    else{
-        currentIndex=0;
-        mixer.removeEventListener("finished", onFinish);
+  const onFinish = (e: any) => {
+    console.log(e);
+    //e.action?.reset().fadeOut(0.25).stop();
+   
+    if (currentIndex < animationSeq.length - 1) {
+      currentIndex++;
+    //   e.action?.reset().fadeOut(0.25).stop();
+      LoadAnimation(animationSeq[currentIndex],e.action);
+    } else {
+      currentIndex = 0;
+      mixer.removeEventListener("finished", onFinish);
+      e.action?.stop();
     }
     
+    //e.action?.stop();
+  
     //mixer.removeEventListener('finished');
   };
-  const LoadAnimationSeq = (_url: string, _nextUrl: string,_onFinish : void) => {
+  const LoadAnimationSeq = (
+    _url: string,
+    _nextUrl: string,
+    _onFinish: void
+  ) => {
     gltfLoader.load(_url, (gltf) => {
       var animationAction = mixer?.clipAction((gltf as any).animations[0]);
 
@@ -100,26 +84,32 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
         if (_nextUrl != null) {
           mixer.addEventListener("finished", () => {
             actions[names[0]]?.reset().stop();
-            LoadAnimation(_nextUrl);
+            LoadAnimation(_nextUrl,null);
           });
         }
-       
 
         console.log(_url);
       }
     });
   };
 
-  const LoadAnimation = (_poseURL: string) => {
+  const LoadAnimation = (_poseURL: string,_lastAction:any) => {
     gltfLoader.load(_poseURL, (gltf) => {
+        if(_lastAction!=null)
+        {
+            _lastAction.clampWhenFinished = false;
+            _lastAction.stop();
+        }
       var animationAction = mixer?.clipAction((gltf as any).animations[0]);
 
       // setActiveAction(animationAction);
       if (animationAction) {
-         animationAction.setLoop(THREE.LoopOnce, 0);
-        //animationAction?.reset().fadeOut(0.25).stop();
-        animationAction?.reset().fadeIn(0.25).play();
-        setAction(animationAction);
+        animationAction.setLoop(THREE.LoopOnce, 0);
+        animationAction.clampWhenFinished = true;
+       
+        animationAction?.reset().fadeOut(0).stop();
+        animationAction?.reset().fadeIn(0).play();
+        //setAction(animationAction);
         console.log(_poseURL);
       }
     });
@@ -132,15 +122,19 @@ const ModelRender = ({ animationUrl, animationSeq }: ModelProps) => {
       _lastAction = activeAction;
       setActiveAction(toAction);
       _activeAction = toAction;
+
       lastAction?.reset();
+      _lastAction?.fadeOut(0.25);
       lastAction?.stop();
       // setSelectPos(true);
-      _lastAction?.fadeOut(0.25);
+      //_lastAction?.fadeOut(.25);
 
       //activeAction.stop();
       _activeAction.reset();
       _activeAction.fadeIn(0.25);
       _activeAction.play();
+
+      //lastAction?.stop();
       console.log("activeAction.isRunning", _activeAction.isRunning());
     } else {
     }
